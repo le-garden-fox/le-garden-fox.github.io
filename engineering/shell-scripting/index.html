@@ -28,6 +28,7 @@
         <title>Shell Scripting For The Uninitiated &middot; Le Garden Fox</title>
         <link rel="canonical" href="https://le-garden-fox.github.io/" />
         <link rel="alternate" type="application/rss+xml" title="RSS" href="">
+        <link rel="stylesheet" type="text/css" href="https://le-garden-fox.github.io/css/custom.css"/>
         <link rel="stylesheet" type="text/css" href="https://le-garden-fox.github.io/css/main.css"/>
             <link rel="stylesheet" type="text/css" href="https://le-garden-fox.github.io/css/syntax.css"/>
         <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300|Montserrat:700" rel="stylesheet" type="text/css">
@@ -58,6 +59,8 @@
         <p class="blog-description">love under will</p>
 
         
+        <img src="https://le-garden-fox.github.io/images/volcano.jpg"/>
+        
     </div>
 </header>
 <main class="content" role="main">
@@ -68,8 +71,74 @@
     </header>
 
     <section class="post-content">
-        <p>Testing testing 123</p>
+        <p>I really appreciate young engineers that are starting their careers. They have a great deal of passion for their work, perhaps because everything is so new. This post is meant to introduce young engineers to the basics of good shell scripts.</p>
+<p>I often get asked by young software engineers what I would recommend they focus on or learn. My answer is always two fold, networking and shell scripting. My reasopning comes from experience.</p>
+<p>At the root of software enginering is the operating system and the kernel. Learning to navigate the file system and execute commands in the shell remotely or otherwise is essential. Often times you find that you are performing repetitive tasks even on your local environment and this is where shell scripting comes into play.</p>
+<p>My rule book for shell scripts are simple.</p>
+<ul>
+<li>Have a child directory from your home/root directory dedicated to storing your shell scripts, and keep it orgnaized.</li>
+<li>Always define bash in the “shebang” header relative to the environment. If you share your scripts it is better to not assume where bash is located.</li>
+<li>Wrap your code in a function fromn the start and execute that function in a sub shell. If the function runs changes directory running it in a subshell prevents you from having to cd back to where you started.</li>
+<li>Define variables using local.</li>
+</ul>
+<p>My last bit of advice is never run scripts from the web directly using sudo. Download the script locally, read the contents, understasnd it and then see if running it as sudo is approrpiate.</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># source scripts here that you want sub shells to clone</span>
+<span class="nb">source</span> ~/.my-scripts
 
+<span class="c1"># organize your code into methods called from the main function</span>
+<span class="k">function</span> method1 <span class="o">{</span>
+
+    <span class="c1"># use a subshell when changing directories so that you dont have to cd back to your starting directory</span> 
+    <span class="o">(</span>
+        <span class="c1"># source some other env here that will only live in the child</span> 
+        <span class="nb">source</span> ./.env-local
+
+        <span class="c1"># use the local keyword</span> 
+        <span class="nb">local</span> <span class="nv">my_path</span><span class="o">=</span><span class="s2">&#34;/tmp/my place&#34;</span>
+    
+        <span class="c1"># ^use quotes for paths in case the paths have spaces in their names</span>
+        <span class="nb">cd</span> <span class="s2">&#34;</span><span class="nv">$my_path</span><span class="s2">&#34;</span> 
+
+        <span class="c1">#add some output to help you know what is happening</span> 
+        <span class="nb">echo</span>  <span class="s2">&#34;switching directories </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&#34;</span>
+
+        <span class="c1"># this will write to the /tmp/test file</span> 
+        <span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$HELLO</span><span class="s2">&#34;</span> &gt;&gt; ./test
+
+        cat /tmp/test
+        
+    <span class="o">)</span>
+
+    <span class="c1"># if you pwd here you will see that you are back where you started (yay)</span> 
+    <span class="nb">echo</span> <span class="s2">&#34;You are back where you started </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&#34;</span>
+<span class="o">}</span>
+
+<span class="c1"># Add a comement (this method does what?)</span>
+<span class="k">function</span> method2 <span class="o">{</span>
+
+    <span class="nb">echo</span> <span class="s2">&#34;hello world&#34;</span>
+<span class="o">}</span>
+
+<span class="k">function</span> main <span class="o">{</span>
+
+    <span class="c1"># this scales well and allows you to treat your scripts as CLIs</span> 
+    <span class="k">case</span> <span class="nv">$1</span> in
+    <span class="s2">&#34;method1&#34;</span><span class="o">)</span>
+        method1 
+    <span class="p">;;</span>
+    <span class="s2">&#34;method2&#34;</span><span class="o">)</span>
+        method2
+    <span class="p">;;</span>
+    *<span class="o">)</span>
+        <span class="c1"># show atleast some basic help</span> 
+        <span class="nb">echo</span> <span class="s2">&#34;Not a valid method.&#34;</span>
+    <span class="p">;;</span>
+    <span class="k">esac</span>
+<span class="o">}</span>
+
+
+main <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span>
+</code></pre></div>
     </section>
 
     <hr>

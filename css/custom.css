@@ -1,0 +1,15 @@
+.App {
+    background: #ececec6e;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+p a {
+    color: #0072ff !important;
+}
+
+img.gallery-photo {
+    display: block;
+    margin: auto;
+    padding: 5px;
+}

@@ -2,12 +2,12 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Engineering on Le Garden Fox</title>
-    <link>http://lightthief.io/engineering/</link>
+    <link>https://le-garden-fox.github.io/engineering/</link>
     <description>Recent content in Engineering on Le Garden Fox</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
-	<atom:link href="http://lightthief.io/engineering/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://le-garden-fox.github.io/engineering/index.xml" rel="self" type="application/rss+xml" />
     
     
   </channel>

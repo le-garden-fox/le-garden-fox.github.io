@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#"><!--<![endif]-->
+
+    <head>
+                <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="author" content="">
+  
+	
+        <meta property="og:site_name" content="Le Garden Fox">
+        <meta property="og:title" content="Le Garden Fox">
+        <meta property="og:url" content="https://le-garden-fox.github.io/engineering/unblocked-dns/">
+        <meta property="og:description" content="love under will">
+    
+        <meta property="og:type" content="article" />
+        <meta property="og:article:author" content="" />
+        <meta property="og:article:published_time" content="2020-06-23T23:22:03-07:00" />
+    
+        <meta name="generator" content="Hugo 0.73.0" />
+        <title>Unblocked DNS &middot; Le Garden Fox</title>
+        <link rel="canonical" href="https://le-garden-fox.github.io/" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="">
+        <link rel="stylesheet" type="text/css" href="https://le-garden-fox.github.io/css/custom.css"/>
+        <link rel="stylesheet" type="text/css" href="https://le-garden-fox.github.io/css/main.css"/>
+            <link rel="stylesheet" type="text/css" href="https://le-garden-fox.github.io/css/syntax.css"/>
+        <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300|Montserrat:700" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    </head>
+
+<body>
+<!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chrome/‎">install Google Chrome</a> to experience this site.</p><![endif]-->
+
+<header id="header">
+
+    <nav class="links">
+        <ul>
+            
+                <li>
+                    <a href="https://le-garden-fox.github.io/">
+                            <i class="fa fa-home">&nbsp;</i>Home
+                    </a>
+                </li>
+            
+        </ul>
+    </nav>
+</header>
+<header id="site-header">
+    <div class="container">
+        <a href="https://le-garden-fox.github.io/" alt="Le Garden Fox"><h1 class="blog-title heading">Le Garden Fox</h1></a>
+        <p class="blog-description">love under will</p>
+
+        
+        <img src="https://le-garden-fox.github.io/images/7-altares.jpg"/>
+        
+    </div>
+</header>
+<main class="content" role="main">
+	<div class="container">
+		<article class="engineering">
+	<header class="post-header">
+        <h3 class="p-post-title">Unblocked DNS</h3>
+    </header>
+
+    <section class="post-content">
+        <p>DNS is one of the pillars of networking. Its function is easy but its implmentation can be a bit opaque.
+My goal here is to enlighten on DNS so that as a mid level or junior engineer you develop a greater comfort with it.</p>
+<ul>
+<li>What DNS does</li>
+<li>How DNS is structured</li>
+<li>How to debug issues related to DNS</li>
+</ul>
+<p>Basically I wan want to &ldquo;unblock&rdquo; you.</p>
+<h3 id="what-does-dns-do">What does DNS do?</h3>
+<p>The purpose of DNS is quite easy, it converts hostnames to IP addressess. A host name such as google.com can be resolved to a IP address. The IP returned by a DNS server might differ based on geolocation, Internet Servervice Provider (ISP) or network load. This means that the IP address returned for me could be different for you if we both requested the IP of google.com.</p>
+<p>That being said, DNS, no matter what IP it returns (if the DNS server returns an answer), will be the cannonical answer at that time.</p>
+<h3 id="how-dns-it-is-structured">How DNS it is structured?</h3>
+<p>The DNS service at large, i.e. of the internet, is a distributed database that is split up into a few major sections, root servers, top level domain servers, athoratative servers, and recursive servers a.k.a. resolving servers.</p>
+<p>If we were to look at a DNS request and how it resolves a name to an IP the general path it travels would be like this.</p>
+<ul>
+<li>your computer</li>
+<li>checks its resolve.conf file for its configured namservers
+<ul>
+<li>name servers can be configured manually but are often assigned by your router when you set up your computers wifi or ethernets connection.</li>
+<li>The router in turn often gets the name servers IP from the Internet Service Provider (ISP) when the router is set up.</li>
+</ul>
+</li>
+<li>Once the computer loads the IP address of the nameservers it can procede
+<ul>
+<li>The initial name servers are not <strong>normally</strong> authoritative servers, meaning when a record is created it is not created on those servers.</li>
+<li>The initial name servers are usually managed by your ISP and serve more like a cache.</li>
+<li>The ISP name servers will check their cache for a record &ldquo;google.com&rdquo; of type A (there are many types of records but A records are usually the default)
+<ul>
+<li>if no record is found in the cache the name servers wull usually reach out to the root servers</li>
+<li>there are 13 root servers worldwide, each root server is actually backed up to multiple locations.</li>
+<li>these root servers will then break down the request and forward your request to the Top Level Domain (TLD) servers.
+<ul>
+<li>Having TLD servers like .com, .net, .io, .co, .us is a convinient way to traverse the domain name database. In our example case the root servers would forward the request to the .com TLD servers and essentially ask if they know of the servers for google.</li>
+<li>If it know about the google DNS servers it will forward your request there and attempt to get a result from those servers.</li>
+<li>Once it reaches the google servers, the google servers can return the IP for the google.com A record.
+<ul>
+<li>Gooogle runs its own DNS servers so it can decide which IP to return to you based on where the DNS query came from and knowledge of its system. If you write and manage your own DNS servers like google does, you can return an IP based on any criteria you want, time of day, geolocation, network spikes or whatever suits your fancy.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>As shown above the DNS query can traverse a lot of machines and it does this very quickly. It does this quickly in part because the underlining transport protocol of the DNS system is User Datgram Protocol (UDP).</p>
+<p>UDP is a stateless protocol in contrary to the more typical TCP protocol. In essense the UDP protocol by design does not require any kind of confirmation that a connection has been established. UDP by design sends out a packet to a known IP at a known port, in the case of DNS the port is port 53, (AWS route53 is their cloud based DNS service named after that port). UDP will wait for a response assuming the target is correct. It dt oes not ty to verify that the target is correct and is listening, which is what TCP does.</p>
+<p>Using UDP saves time as the request traverses the network to its final destination the nodes along the way do not have to confirm they have established connections but simply return a response or timeout.</p>
+<p>Once an IP  is returned the operating system will forward the IP to yoru program where your program can then send TCP (usually TCP) packets to that IP.</p>
+<p>To reiterate the main points</p>
+<ul>
+<li>Your computer has preconfigured name servers
+<ul>
+<li>you can find these in the /etc/resolve.conf file on your system</li>
+<li>the name servers are given to you by your router, and your router usually gets them from the ISP but can be set manually or programmatically by a network administrator.</li>
+</ul>
+</li>
+<li>DNS is a distributed database</li>
+<li>DNS uses the UDP protocol on port 53
+<ul>
+<li>The UDP protocol is refered to as a stateless protocol because it does not verify that the target exists, the DNS system will wait for a response but if none is given then it will timeout.</li>
+</ul>
+</li>
+<li>You can debug DNS  issues usally with the dig command line tool</li>
+</ul>
+
+    </section>
+
+    <hr>
+
+    <footer class="post-footer">
+        <section class="f-1">
+            
+            
+            <p class="f-post-time"><time datetime="2020-06-23T23:22:03-07:00">June 23, 2020</time></p>
+        </section>
+                        
+        <section class="f-2">
+            <section class="share">
+                <span>Share:
+                <a class="icon-twitter" href="http://twitter.com/share?text=Unblocked%20DNS&url=https%3a%2f%2fle-garden-fox.github.io%2fengineering%2funblocked-dns%2f"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fle-garden-fox.github.io%2fengineering%2funblocked-dns%2f"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fle-garden-fox.github.io%2fengineering%2funblocked-dns%2f"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                </span>
+            </section>
+
+            
+        </section>
+                        
+    </footer>
+</article>
+	</div>
+</main>
+    <footer id="site-footer">
+        <div class="container">
+          
+          
+          
+          
+          <a href="https://le-garden-fox.github.io/index.xml" title="Get the RSS feed"><span class="tooltip"><i class="fa fa-rss"></i></span></a>
+          <section>&copy; <a href="https://le-garden-fox.github.io/"></a> 2017 | All rights reserved</section>
+          </div>
+    </footer>
+
+    <script type="text/javascript" src="https://le-garden-fox.github.io/js/fittext.js"></script>
+    <script type="text/javascript">
+      $(".heading").fitText();
+    </script>
+
+
+
+</body>
+</html>

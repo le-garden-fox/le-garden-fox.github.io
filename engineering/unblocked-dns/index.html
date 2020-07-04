@@ -72,7 +72,7 @@
 
     <section class="post-content">
         <p>DNS is one of the pillars of networking. Its function is easy but its implementation can be a bit opaque.
-My goal here is to enlighten on DNS so that as a mid level or junior engineer you develop a greater comfort with it.</p>
+My goal here is to enlighten you on DNS so that as a mid level or junior engineer you develop a greater comfort with it. Here are the main topics I  want to inform you of.</p>
 <ul>
 <li>What DNS does</li>
 <li>How DNS is structured</li>
@@ -80,34 +80,34 @@ My goal here is to enlighten on DNS so that as a mid level or junior engineer yo
 </ul>
 <p>Basically I want to &ldquo;unblock&rdquo; you.</p>
 <h3 id="what-does-dns-do">What does DNS do?</h3>
-<p>The purpose of DNS is quite easy, it converts hostnames to IP addresses. A host name such as google.com can be resolved to a IP address. The IP returned by a DNS server might differ based on geolocation, Internet Service Provider (ISP) or network load. This means that the IP address returned for me could be different for you if we both requested the IP of google.com.</p>
+<p>The purpose of DNS is quite easy, it converts hostnames to IP addresses. A host name such as google.com can be resolved to a IP address. The IP returned by a DNS server might differ based on geolocation, Internet Service Provider (ISP) or network load. This means that the IP address returned for me could be different for you, if we both requested the IP of google.com.</p>
 <p>That being said, DNS, no matter what IP it returns (if the DNS server returns an answer), will be the canonical answer at that time.</p>
 <h3 id="how-dns-is-structured">How DNS is structured?</h3>
 <p>The DNS service at large, i.e. of the internet, is a distributed database that is split up into a few major sections, root servers, top level domain servers, authoritative servers, and recursive servers a.k.a. resolving servers.</p>
-<p>If we were to look at a DNS request and how it resolves a name to an IP the general path it travels would be like this.</p>
+<p>If we were to look at a DNS request and how it resolves a name to an IP the general network flow would lilely be as follows.</p>
 <ul>
-<li>your computer</li>
-<li>checks its resolve.conf file for its configured name servers
+<li>Your computer checks its /etc/resolve.conf file for its configured name servers IP addresses.
 <ul>
-<li>name servers can be configured manually but are often assigned by your router when you set up your computer&rsquo;s wifi or ethernet connection.</li>
-<li>The router in turn often gets the name servers IP from the Internet Service Provider (ISP) when the router is set up.</li>
+<li>Name servers IP addresses can be configured manually but are often assigned by your router when you set up your computer&rsquo;s wifi or ethernet connection.</li>
+<li>The router in turn often gets the name servers IP addresses from the Internet Service Provider (ISP) when the router is set up.</li>
 </ul>
 </li>
 <li>Once the computer loads the IP address of the nameservers it can proceed
 <ul>
 <li>The initial name servers are not <strong>normally</strong> authoritative servers, meaning when a record is created it is not created on those servers.</li>
 <li>The initial name servers are usually managed by your ISP and serve more like a cache.</li>
-<li>The ISP name servers will check their cache for a record &ldquo;google.com&rdquo; of type A (there are many types of records but A records are usually the default)
+<li>The ISP name servers will check their cache for a record called &ldquo;google.com&rdquo; of type A (there are many types of records but A records are usually the default)
 <ul>
-<li>if no record is found in the cache the name servers will usually reach out to the root servers</li>
-<li>there are 13 root servers worldwide, each root server is actually backed up to multiple locations.</li>
-<li>these root servers will then break down the request and forward your request to the Top Level Domain (TLD) servers.
+<li>If no record is found in the cache the name servers will usually reach out to the root servers.</li>
+<li>Root oot servers are often ommited in the DNS path but are implied and can sometimes be seen as represented by a single dot &ldquo;.&rdquo;. One can think of the real path as being <strong>&ldquo;google.com.&quot;</strong>.</li>
+<li>There are 13 root servers worldwide, each root server is actually backed up to multiple locations.</li>
+<li>These root servers will then break down the request and forward your request to the Top Level Domain (TLD) servers.
 <ul>
 <li>Having TLD servers like .com, .net, .io, .co, .us is a convenient way to traverse the domain name database. In our example case the root servers would forward the request to the .com TLD servers and essentially ask if they know of the servers for google.</li>
-<li>If it know about the google DNS servers it will forward your request there and attempt to get a result from those servers.</li>
+<li>If it knows about the google DNS servers it will forward your request there and attempt to get a result from those servers.</li>
 <li>Once it reaches the google servers, the google servers can return the IP for the google.com A record.
 <ul>
-<li>Google runs its own DNS servers so it can decide which IP to return to you based on where the DNS query came from and knowledge of its system. If you write and manage your own DNS servers like google does, you can return an IP based on any criteria you want, time of day, geolocation, network spikes or whatever suits your fancy.</li>
+<li>Google runs its own DNS servers so it can decide which IP to return to you based on where the DNS query came from and knowledge of its it&rsquo;s system i.e. load at the time of the request. If you write and manage your own DNS servers, like google does, you can return an IP based on any criteria you want, time of day, geolocation, network spikes or whatever suits your fancy.</li>
 </ul>
 </li>
 </ul>
@@ -117,10 +117,10 @@ My goal here is to enlighten on DNS so that as a mid level or junior engineer yo
 </ul>
 </li>
 </ul>
-<p>As shown above the DNS query can traverse a lot of machines and it does this very quickly. It does this quickly in part because the underlying transport protocol of the DNS system is User Datagram Protocol (UDP).</p>
-<p>UDP is a stateless protocol in contrast to the more typical TCP protocol. In essence the UDP protocol by design does not require any kind of confirmation that a connection has been established. UDP by design sends out a packet to a known IP at a known port, in the case of DNS the port is port 53, (AWS route53 is their cloud based DNS service named after that port). UDP will wait for a response assuming the target is correct. It does not try to verify that the target is correct and is listening, which is what TCP does.</p>
-<p>Using UDP saves time as the request traverses the network to its final destination the nodes along the way do not have to confirm they have established connections but simply return a response or timeout.</p>
-<p>Once an IP  is returned the operating system will forward the IP to yoru program where your program can then send TCP (usually TCP) packets to that IP.</p>
+<p>As shown above the DNS query can traverse a lot of machines and it does this very quickly. It does this quickly in part because the underlying transport protocol of the DNS system is the User Datagram Protocol (UDP).</p>
+<p>UDP is a stateless protocol in contrast to the more typical TCP protocol. In essence the UDP protocol by design does not require any kind of confirmation that a connection has been established. UDP by design sends out a packet to a known IP at a known port, in the case of DNS the port is port 53, (AWS Route53 is Amazons cloud based DNS service which sports the &ldquo;53&rdquo; as anod to the port number). UDP will wait for a response and will assume the target IP is correct. UPD does not try to verify that the target IP is correct or if a DNS server is listening, it just fires off a request and waits for a response. The TCP protocol in contrast does a lot of checking to insure it sends a request to a valid IP and that a connection is established.</p>
+<p>Using UDP saves time as the request traverses the network to its final destination. The nodes along the way do not have to confirm they have established connections but simply return a response or timeout.</p>
+<p>Once an IP is returned the operating system will forward the IP to your program where your program can do what it does.</p>
 <p>To reiterate the main points</p>
 <ul>
 <li>Your computer has pre configured name servers
@@ -137,6 +137,141 @@ My goal here is to enlighten on DNS so that as a mid level or junior engineer yo
 </li>
 <li>You can debug DNS  issues usually with the dig command line</li>
 </ul>
+<h3 id="how-to-debug-dns-issues">How to debug DNS issues</h3>
+<p>This setion will be short, because the answer is quite simple. The most likely and arguably the best tool for debugging DNS issues is going to be the dig utility.</p>
+<p>I  will offer and example:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ dig google.com A
+</code></pre></div><p>For that dig command we can make a request  which has the following response:</p>
+<pre><code>; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; google.com A
+;; global options: +cmd
+;; Got answer:
+;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 35207
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 512
+;; QUESTION SECTION:
+;google.com.			IN	A
+
+;; ANSWER SECTION:
+google.com.		239	IN	A	216.58.194.174
+
+;; Query time: 23 msec
+;; SERVER: 192.168.86.1#53(192.168.86.1)
+;; WHEN: Sat Jul 04 16:25:24 PDT 2020
+;; MSG SIZE  rcvd: 55
+
+</code></pre><p>Above we can see a few things.</p>
+<ul>
+<li>there is a section that affirms the command</li>
+<li>there is a section for the headers</li>
+<li>there is a sectionf or the query</li>
+<li>and there is a section for the response</li>
+</ul>
+<p>In the example above we see the answer is</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="p">;;</span> ANSWER SECTION:
+google.com.		239	IN	A	216.58.194.174
+</code></pre></div><p>Thehe dig utility has a tremendous ammount of options, and I suggest you take it for a test drive. So below I will only list the command that I think are the most useful when debugging, it is in no way exhaustive. I simpl simpy want to give you a taste for the power of dig.</p>
+<p><code>dig @8.8.8.8 google.com  +trace</code>
+In the previous command I have asked dig to:</p>
+<ul>
+<li>Use the specific DNS servers at the IP <code>8.8.8.8</code>
+<ul>
+<li>this can be useful if you are on an internal network with its own default name servers and you still want to make a query to an external DNS server on the internet and not on the local network.</li>
+</ul>
+</li>
+<li>Also int he query is the domain name <code>google.com</code></li>
+<li><code>+trace</code> well print out the path that the DNS query makes to get to the authoritative DNS servers.</li>
+</ul>
+<p>The response is very verbose</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">
+dig @8.8.8.8 google.com  +trace 
+
+<span class="p">;</span> &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; @8.8.8.8 google.com +trace
+<span class="p">;</span> <span class="o">(</span><span class="m">1</span> server found<span class="o">)</span>
+<span class="p">;;</span> global options: +cmd
+.			60898	IN	NS	a.root-servers.net.
+.			60898	IN	NS	b.root-servers.net.
+.			60898	IN	NS	c.root-servers.net.
+.			60898	IN	NS	d.root-servers.net.
+.			60898	IN	NS	e.root-servers.net.
+.			60898	IN	NS	f.root-servers.net.
+.			60898	IN	NS	g.root-servers.net.
+.			60898	IN	NS	h.root-servers.net.
+.			60898	IN	NS	i.root-servers.net.
+.			60898	IN	NS	j.root-servers.net.
+.			60898	IN	NS	k.root-servers.net.
+.			60898	IN	NS	l.root-servers.net.
+.			60898	IN	NS	m.root-servers.net.
+.			60898	IN	RRSIG	NS <span class="m">8</span> <span class="m">0</span> <span class="m">518400</span> <span class="m">20200716170000</span> <span class="m">20200703160000</span> <span class="m">46594</span> . PdIvBBAJ/cUxC2Gzrx5wQg1x54hl2xVmJdB5XVv2jcXiPvnxvWyAL57u lwyimGMXf/oCJMkjDyq3v4xQ7yCgY0FebljtharIszMr5teGqI8ERP7u GfJAomY2uf+BRDq9ghYnK0QjYNDwCYDH89D4+NYkIzHgTQW0ygBtj5v7 TVJQ8A9E+RzpWSfBDCF5Sn741yVmk7ChjPkO3xIuiOqcdDU8KZo0L3ny qHb2Jwl08adsYEFxght/HqoCQNMwIIBPoeKjWCRqpDYzeWzHl524YTdp /3XJQ+yWByqG3YIpGH9FnN6ZFuaNxbZDabXupNf+JUlKONacP1mtJ71r <span class="nv">ac6eQg</span><span class="o">==</span>
+<span class="p">;;</span> Received <span class="m">525</span> bytes from 8.8.8.8#53<span class="o">(</span>8.8.8.8<span class="o">)</span> in <span class="m">32</span> ms
+
+com.			172800	IN	NS	a.gtld-servers.net.
+com.			172800	IN	NS	b.gtld-servers.net.
+com.			172800	IN	NS	c.gtld-servers.net.
+com.			172800	IN	NS	d.gtld-servers.net.
+com.			172800	IN	NS	e.gtld-servers.net.
+com.			172800	IN	NS	f.gtld-servers.net.
+com.			172800	IN	NS	g.gtld-servers.net.
+com.			172800	IN	NS	h.gtld-servers.net.
+com.			172800	IN	NS	i.gtld-servers.net.
+com.			172800	IN	NS	j.gtld-servers.net.
+com.			172800	IN	NS	k.gtld-servers.net.
+com.			172800	IN	NS	l.gtld-servers.net.
+com.			172800	IN	NS	m.gtld-servers.net.
+com.			86400	IN	DS	<span class="m">30909</span> <span class="m">8</span> <span class="m">2</span> E2D3C916F6DEEAC73294E8268FB5885044A833FC5459588F4A9184CF C41A5766
+com.			86400	IN	RRSIG	DS <span class="m">8</span> <span class="m">1</span> <span class="m">86400</span> <span class="m">20200717170000</span> <span class="m">20200704160000</span> <span class="m">46594</span> . I/ILotMw+NzNRWhh/lj0YSy74bF8mi+nUC9doZjg5U0Z9aki3c14dCmE 4mvVxq5+A1tfz2qOOWvYglRYxZXrDYxJW+8TwEn8+2gbGyd58AC3MAud 5MaCK8RNI/PsKNTqVVTEdtfSCGUdHLMOuYx6BVoRIqoplPahupwcE9uw ySCyE0eGBGjoe5eqGc0lP2mb8OihvyloHvdykSAAfEHRi3Rws41JphCA tRPettPaaeD02Puzwq1RpwhdXZJFaDURujLAAK1wTJLezF/wuxQfYO0s L9ym045Fljn17M3R3rosF35zI++HuEQ8JLl1dDhkfZpDI8GIh5WU6NUc <span class="nv">IgVRVQ</span><span class="o">==</span>
+<span class="p">;;</span> Received <span class="m">1170</span> bytes from 199.7.83.42#53<span class="o">(</span>l.root-servers.net<span class="o">)</span> in <span class="m">32</span> ms
+
+google.com.		172800	IN	NS	ns2.google.com.
+google.com.		172800	IN	NS	ns1.google.com.
+google.com.		172800	IN	NS	ns3.google.com.
+google.com.		172800	IN	NS	ns4.google.com.
+CK0POJMG874LJREF7EFN8430QVIT8BSM.com. <span class="m">86400</span> IN NSEC3 <span class="m">1</span> <span class="m">1</span> <span class="m">0</span> - CK0Q1GIN43N1ARRC9OSM6QPQR81H5M9A  NS SOA RRSIG DNSKEY NSEC3PARAM
+CK0POJMG874LJREF7EFN8430QVIT8BSM.com. <span class="m">86400</span> IN RRSIG NSEC3 <span class="m">8</span> <span class="m">2</span> <span class="m">86400</span> <span class="m">20200708044206</span> <span class="m">20200701033206</span> <span class="m">39844</span> com. Pe4WH+HM8RD4b3qMPoAfhEkbj6JnLrT1USV0g7i9SHtSG5Cv2gIrWu4s xmR5ynjZKPFFSL6acHElnJxcLyaL3TGGc7CfALk911YAv21JYJ5cH7YB zdagPbI7qeLoQ1ggiq5uytI2/YaLwnOKa0t5Hd/3iKHe7W88Jjbel7DK 0lO9OVv/2356V4nTfrVbYgBghFm/fFwdt6Fs6MVQfl1eqQ<span class="o">==</span>
+S84BDVKNH5AGDSI7F5J0O3NPRHU0G7JQ.com. <span class="m">86400</span> IN NSEC3 <span class="m">1</span> <span class="m">1</span> <span class="m">0</span> - S84CDVS9VPREADFD6KK7PDADH0M6IO8H  NS DS RRSIG
+S84BDVKNH5AGDSI7F5J0O3NPRHU0G7JQ.com. <span class="m">86400</span> IN RRSIG NSEC3 <span class="m">8</span> <span class="m">2</span> <span class="m">86400</span> <span class="m">20200709043841</span> <span class="m">20200702032841</span> <span class="m">39844</span> com. teZQNJ+bIKMgE7s06Ip6+7uIJGP/+OCr2AFgSJGKexMrvlad7IFZjkQB KHq+evhKbsF5Xqbd7sjmE+9euRxSj4O6QtIwHtdzeMvytt8mVWPiSUfl 0+sfANDqUNjdIHDXpRiFGDWLaLs7rPApvmK+EWcMKQsYU/1Q0mup7Cya 7/jRFarv3JO5+80QE2zGWbiE7iCBoFOYAJ2DuHfIUuzFBQ<span class="o">==</span>
+<span class="p">;;</span> Received <span class="m">836</span> bytes from 192.55.83.30#53<span class="o">(</span>m.gtld-servers.net<span class="o">)</span> in <span class="m">43</span> ms
+
+google.com.		300	IN	A	172.217.0.46
+<span class="p">;;</span> Received <span class="m">55</span> bytes from 216.239.38.10#53<span class="o">(</span>ns4.google.com<span class="o">)</span> in <span class="m">68</span> ms
+</code></pre></div><p>Form theorm th output above we see that our query too the following path</p>
+<ul>
+<li>8.8.8.8#53(8.8.8.8)
+<ul>
+<li>(#53 is the port number)</li>
+</ul>
+</li>
+<li>199.7.83.42#53(l.root-servers.net) // Root servers</li>
+<li>192.55.83.30#53(m.gtld-servers.net) // TLD  servers</li>
+<li>216.239.38.10#53(ns4.google.com) // Authoritative servers</li>
+</ul>
+<p>That is pretty awesome.</p>
+<p>If you want to check do a reverse lookup, i.e. you have an IP  and want to know the domain name you can run</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"> dig -x 216.239.38.10
+</code></pre></div><p>That query will respond with</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="p">;</span> &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; -x 216.239.38.10
+<span class="p">;;</span> global options: +cmd
+<span class="p">;;</span> Got answer:
+<span class="p">;;</span> -&gt;&gt;HEADER<span class="s">&lt;&lt;- opco</span>de: QUERY, status: NOERROR, id: <span class="m">12335</span>
+<span class="p">;;</span> flags: qr rd ra<span class="p">;</span> QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: <span class="m">1</span>
+
+<span class="p">;;</span> OPT PSEUDOSECTION:
+<span class="p">;</span> EDNS: version: 0, flags:<span class="p">;</span> udp: <span class="m">512</span>
+<span class="p">;;</span> QUESTION SECTION:
+<span class="p">;</span>10.38.239.216.in-addr.arpa.	IN	PTR
+
+<span class="p">;;</span> ANSWER SECTION:
+10.38.239.216.in-addr.arpa. <span class="m">21586</span> IN	PTR	ns4.google.com.
+
+<span class="p">;;</span> Query time: <span class="m">56</span> msec
+<span class="p">;;</span> SERVER: 192.168.86.1#53<span class="o">(</span>192.168.86.1<span class="o">)</span>
+<span class="p">;;</span> WHEN: Sat Jul <span class="m">04</span> 16:40:05 PDT <span class="m">2020</span>
+<span class="p">;;</span> MSG SIZE  rcvd: <span class="m">83</span>
+</code></pre></div><p>If you want to shorten the response to just the answer section add the <code>+short</code> parameter to the query.</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ dig -x 216.239.38.10 +short 
+ns4.google.com.
+</code></pre></div><p>The response to that is veyr clear and brief.</p>
 
     </section>
 

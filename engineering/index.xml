@@ -1,36 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Engineerings on Le Garden Fox</title>
+    <title>Engineering on Le Garden Fox</title>
     <link>https://le-garden-fox.github.io/engineering/</link>
-    <description>Recent content in Engineerings on Le Garden Fox</description>
+    <description>Recent content in Engineering on Le Garden Fox</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 01 Jul 2020 23:22:03 -0700</lastBuildDate>
     
 	<atom:link href="https://le-garden-fox.github.io/engineering/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Unblocked DNS</title>
-      <link>https://le-garden-fox.github.io/engineering/unblocked-dns/</link>
-      <pubDate>Wed, 01 Jul 2020 23:22:03 -0700</pubDate>
-      
-      <guid>https://le-garden-fox.github.io/engineering/unblocked-dns/</guid>
-      <description>DNS is one of the pillars of networking. Its function is easy but its implmentation can be a bit opaque. My goal here is to enlighten on DNS so that as a mid level or junior engineer you develop a greater comfort with it.
- What DNS does How DNS is structured How to debug issues related to DNS  Basically I wan want to &amp;ldquo;unblock&amp;rdquo; you.
-What does DNS do?</description>
-    </item>
-    
-    <item>
-      <title>Shell Scripting For The Uninitiated</title>
-      <link>https://le-garden-fox.github.io/engineering/shell-scripting/</link>
-      <pubDate>Tue, 23 Jun 2020 23:22:03 -0700</pubDate>
-      
-      <guid>https://le-garden-fox.github.io/engineering/shell-scripting/</guid>
-      <description>I really appreciate young engineers that are starting their careers. They have a great deal of passion for their work, perhaps because everything is so new. This post is meant to introduce young engineers to the basics of good shell scripts.
-I often get asked by young software engineers what I would recommend they focus on or learn. My answer is always two fold, networking and shell scripting. My reasopning comes from experience.</description>
-    </item>
     
   </channel>
 </rss>

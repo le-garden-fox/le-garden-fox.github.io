@@ -71,43 +71,43 @@
     </header>
 
     <section class="post-content">
-        <p>DNS is one of the pillars of networking. Its function is easy but its implmentation can be a bit opaque.
+        <p>DNS is one of the pillars of networking. Its function is easy but its implementation can be a bit opaque.
 My goal here is to enlighten on DNS so that as a mid level or junior engineer you develop a greater comfort with it.</p>
 <ul>
 <li>What DNS does</li>
 <li>How DNS is structured</li>
 <li>How to debug issues related to DNS</li>
 </ul>
-<p>Basically I wan want to &ldquo;unblock&rdquo; you.</p>
+<p>Basically I want to &ldquo;unblock&rdquo; you.</p>
 <h3 id="what-does-dns-do">What does DNS do?</h3>
-<p>The purpose of DNS is quite easy, it converts hostnames to IP addressess. A host name such as google.com can be resolved to a IP address. The IP returned by a DNS server might differ based on geolocation, Internet Servervice Provider (ISP) or network load. This means that the IP address returned for me could be different for you if we both requested the IP of google.com.</p>
-<p>That being said, DNS, no matter what IP it returns (if the DNS server returns an answer), will be the cannonical answer at that time.</p>
-<h3 id="how-dns-it-is-structured">How DNS it is structured?</h3>
-<p>The DNS service at large, i.e. of the internet, is a distributed database that is split up into a few major sections, root servers, top level domain servers, athoratative servers, and recursive servers a.k.a. resolving servers.</p>
+<p>The purpose of DNS is quite easy, it converts hostnames to IP addresses. A host name such as google.com can be resolved to a IP address. The IP returned by a DNS server might differ based on geolocation, Internet Service Provider (ISP) or network load. This means that the IP address returned for me could be different for you if we both requested the IP of google.com.</p>
+<p>That being said, DNS, no matter what IP it returns (if the DNS server returns an answer), will be the canonical answer at that time.</p>
+<h3 id="how-dns-is-structured">How DNS is structured?</h3>
+<p>The DNS service at large, i.e. of the internet, is a distributed database that is split up into a few major sections, root servers, top level domain servers, authoritative servers, and recursive servers a.k.a. resolving servers.</p>
 <p>If we were to look at a DNS request and how it resolves a name to an IP the general path it travels would be like this.</p>
 <ul>
 <li>your computer</li>
-<li>checks its resolve.conf file for its configured namservers
+<li>checks its resolve.conf file for its configured name servers
 <ul>
-<li>name servers can be configured manually but are often assigned by your router when you set up your computers wifi or ethernets connection.</li>
+<li>name servers can be configured manually but are often assigned by your router when you set up your computer&rsquo;s wifi or ethernet connection.</li>
 <li>The router in turn often gets the name servers IP from the Internet Service Provider (ISP) when the router is set up.</li>
 </ul>
 </li>
-<li>Once the computer loads the IP address of the nameservers it can procede
+<li>Once the computer loads the IP address of the nameservers it can proceed
 <ul>
 <li>The initial name servers are not <strong>normally</strong> authoritative servers, meaning when a record is created it is not created on those servers.</li>
 <li>The initial name servers are usually managed by your ISP and serve more like a cache.</li>
 <li>The ISP name servers will check their cache for a record &ldquo;google.com&rdquo; of type A (there are many types of records but A records are usually the default)
 <ul>
-<li>if no record is found in the cache the name servers wull usually reach out to the root servers</li>
+<li>if no record is found in the cache the name servers will usually reach out to the root servers</li>
 <li>there are 13 root servers worldwide, each root server is actually backed up to multiple locations.</li>
 <li>these root servers will then break down the request and forward your request to the Top Level Domain (TLD) servers.
 <ul>
-<li>Having TLD servers like .com, .net, .io, .co, .us is a convinient way to traverse the domain name database. In our example case the root servers would forward the request to the .com TLD servers and essentially ask if they know of the servers for google.</li>
+<li>Having TLD servers like .com, .net, .io, .co, .us is a convenient way to traverse the domain name database. In our example case the root servers would forward the request to the .com TLD servers and essentially ask if they know of the servers for google.</li>
 <li>If it know about the google DNS servers it will forward your request there and attempt to get a result from those servers.</li>
 <li>Once it reaches the google servers, the google servers can return the IP for the google.com A record.
 <ul>
-<li>Gooogle runs its own DNS servers so it can decide which IP to return to you based on where the DNS query came from and knowledge of its system. If you write and manage your own DNS servers like google does, you can return an IP based on any criteria you want, time of day, geolocation, network spikes or whatever suits your fancy.</li>
+<li>Google runs its own DNS servers so it can decide which IP to return to you based on where the DNS query came from and knowledge of its system. If you write and manage your own DNS servers like google does, you can return an IP based on any criteria you want, time of day, geolocation, network spikes or whatever suits your fancy.</li>
 </ul>
 </li>
 </ul>
@@ -117,13 +117,13 @@ My goal here is to enlighten on DNS so that as a mid level or junior engineer yo
 </ul>
 </li>
 </ul>
-<p>As shown above the DNS query can traverse a lot of machines and it does this very quickly. It does this quickly in part because the underlining transport protocol of the DNS system is User Datgram Protocol (UDP).</p>
-<p>UDP is a stateless protocol in contrary to the more typical TCP protocol. In essense the UDP protocol by design does not require any kind of confirmation that a connection has been established. UDP by design sends out a packet to a known IP at a known port, in the case of DNS the port is port 53, (AWS route53 is their cloud based DNS service named after that port). UDP will wait for a response assuming the target is correct. It dt oes not ty to verify that the target is correct and is listening, which is what TCP does.</p>
+<p>As shown above the DNS query can traverse a lot of machines and it does this very quickly. It does this quickly in part because the underlying transport protocol of the DNS system is User Datagram Protocol (UDP).</p>
+<p>UDP is a stateless protocol in contrast to the more typical TCP protocol. In essence the UDP protocol by design does not require any kind of confirmation that a connection has been established. UDP by design sends out a packet to a known IP at a known port, in the case of DNS the port is port 53, (AWS route53 is their cloud based DNS service named after that port). UDP will wait for a response assuming the target is correct. It does not try to verify that the target is correct and is listening, which is what TCP does.</p>
 <p>Using UDP saves time as the request traverses the network to its final destination the nodes along the way do not have to confirm they have established connections but simply return a response or timeout.</p>
 <p>Once an IP  is returned the operating system will forward the IP to yoru program where your program can then send TCP (usually TCP) packets to that IP.</p>
 <p>To reiterate the main points</p>
 <ul>
-<li>Your computer has preconfigured name servers
+<li>Your computer has pre configured name servers
 <ul>
 <li>you can find these in the /etc/resolve.conf file on your system</li>
 <li>the name servers are given to you by your router, and your router usually gets them from the ISP but can be set manually or programmatically by a network administrator.</li>
@@ -132,10 +132,10 @@ My goal here is to enlighten on DNS so that as a mid level or junior engineer yo
 <li>DNS is a distributed database</li>
 <li>DNS uses the UDP protocol on port 53
 <ul>
-<li>The UDP protocol is refered to as a stateless protocol because it does not verify that the target exists, the DNS system will wait for a response but if none is given then it will timeout.</li>
+<li>The UDP protocol is referred to as a stateless protocol because it does not verify that the target exists, the DNS system will wait for a response but if none is given then it will timeout.</li>
 </ul>
 </li>
-<li>You can debug DNS  issues usally with the dig command line</li>
+<li>You can debug DNS  issues usually with the dig command line</li>
 </ul>
 
     </section>

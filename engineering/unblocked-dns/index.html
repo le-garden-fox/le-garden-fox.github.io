@@ -142,26 +142,26 @@ My goal here is to enlighten you on DNS so that as a mid level or junior enginee
 <p>I  will offer and example:</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ dig google.com A
 </code></pre></div><p>For that dig command we can make a request  which has the following response:</p>
-<pre><code>; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; google.com A
-;; global options: +cmd
-;; Got answer:
-;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 35207
-;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="p">;</span> &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; google.com A
+<span class="p">;;</span> global options: +cmd
+<span class="p">;;</span> Got answer:
+<span class="p">;;</span> -&gt;&gt;HEADER<span class="s">&lt;&lt;- opco</span>de: QUERY, status: NOERROR, id: <span class="m">35207</span>
+<span class="p">;;</span> flags: qr rd ra<span class="p">;</span> QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: <span class="m">1</span>
 
-;; OPT PSEUDOSECTION:
-; EDNS: version: 0, flags:; udp: 512
-;; QUESTION SECTION:
-;google.com.			IN	A
+<span class="p">;;</span> OPT PSEUDOSECTION:
+<span class="p">;</span> EDNS: version: 0, flags:<span class="p">;</span> udp: <span class="m">512</span>
+<span class="p">;;</span> QUESTION SECTION:
+<span class="p">;</span>google.com.			IN	A
 
-;; ANSWER SECTION:
+<span class="p">;;</span> ANSWER SECTION:
 google.com.		239	IN	A	216.58.194.174
 
-;; Query time: 23 msec
-;; SERVER: 192.168.86.1#53(192.168.86.1)
-;; WHEN: Sat Jul 04 16:25:24 PDT 2020
-;; MSG SIZE  rcvd: 55
+<span class="p">;;</span> Query time: <span class="m">23</span> msec
+<span class="p">;;</span> SERVER: 192.168.86.1#53<span class="o">(</span>192.168.86.1<span class="o">)</span>
+<span class="p">;;</span> WHEN: Sat Jul <span class="m">04</span> 16:25:24 PDT <span class="m">2020</span>
+<span class="p">;;</span> MSG SIZE  rcvd: <span class="m">55</span>
 
-</code></pre><p>Above we can see a few things.</p>
+</code></pre></div><p>Above we can see a few things.</p>
 <ul>
 <li>there is a section that affirms the command</li>
 <li>there is a section for the headers</li>

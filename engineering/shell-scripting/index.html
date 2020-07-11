@@ -82,8 +82,28 @@
 <li>Define variables using local.</li>
 </ul>
 <p>My last bit of advice is never run scripts from the web directly using sudo. Download the script locally, read the contents, understasnd it and then see if running it as sudo is approrpiate.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># source scripts here that you want sub shells to clone</span>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#!/usr/bin/env bash
+</span><span class="cp"></span>
+<span class="nb">set</span> -e <span class="c1"># exit on error of a pipe or simeple command if it is a non zero return code</span>
+<span class="nb">set</span> -v <span class="c1"># displays the command before executing it</span> 
+<span class="nb">set</span> -x <span class="c1"># displays commands output</span>
+
+<span class="c1"># source scripts here that you want sub shells to clone</span>
 <span class="nb">source</span> ~/.my-scripts
+
+<span class="c1"># example to loop over arguments</span> 
+<span class="k">function</span> do_loop<span class="o">()</span> <span class="o">{</span>
+    <span class="c1"># the &#34;$#&#34; is the count of all the arguments</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$#</span><span class="s2">&#34;</span> -gt <span class="m">0</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="c1"># the &#34;$@&#34; is the list of all the arguments</span>
+        <span class="k">for</span> p in <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span><span class="p">;</span> <span class="k">do</span>
+            <span class="nb">echo</span> <span class="nv">$p</span>
+        <span class="k">done</span>
+
+    <span class="k">else</span>
+        <span class="nb">echo</span> <span class="s2">&#34;meh&#34;</span>
+    <span class="k">fi</span>
+<span class="o">}</span>
 
 <span class="c1"># organize your code into methods called from the main function</span>
 <span class="k">function</span> method1 <span class="o">{</span>
@@ -117,6 +137,13 @@
 <span class="k">function</span> method2 <span class="o">{</span>
 
     <span class="nb">echo</span> <span class="s2">&#34;hello world&#34;</span>
+    <span class="c1"># use a subshell to cd so when it returns you are back in the current workign directory vs the directory you changed to</span>
+    <span class="o">(</span>
+        <span class="nb">cd</span> /
+        <span class="nb">pwd</span> 
+    <span class="o">)</span>
+
+    <span class="nv">$pwd</span> <span class="c1"># because a sub shell was used when you chnaged directory above the working directory did not change for this shell</span>
 <span class="o">}</span>
 
 <span class="k">function</span> main <span class="o">{</span>

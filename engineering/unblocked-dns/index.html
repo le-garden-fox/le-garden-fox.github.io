@@ -84,11 +84,23 @@ My goal here is to enlighten you on DNS so that as a mid level or junior enginee
 <p>That being said, DNS, no matter what IP it returns (if the DNS server returns an answer), will be the canonical answer at that time.</p>
 <h3 id="how-dns-is-structured">How DNS is structured?</h3>
 <p>The DNS service at large, i.e. of the internet, is a distributed database that is split up into a few major sections, root servers, top level domain servers, authoritative servers, and recursive servers a.k.a. resolving servers.</p>
-<p>If we were to look at a DNS request and how it resolves a name to an IP the general network flow would lilely be as follows.</p>
+<p>If we were to look at a DNS request and how it resolves a name to an IP the general network flow would likely be as follows.</p>
 <ul>
-<li>Your computer checks its /etc/resolve.conf file for its configured name servers IP addresses.
+<li>Check /etc/nsswitch.conf file to parse the order by which to check the hostname</li>
+<li>If /etc/nsswitch.conf host file contains the following <code>hosts:          files dns</code>
 <ul>
-<li>Name servers IP addresses can be configured manually but are often assigned by your router when you set up your computer&rsquo;s wifi or ethernet connection.</li>
+<li>It means check the <code>/etc/hosts</code> file to see if there is a hostname and IP mapping in that file
+<ul>
+<li>The <code>/etc/hosts</code> file would contain static configurations like the following <code>192.168.51.2    foo.example.com</code> or <code>127.0.0.1       localhost</code> where the IP is mapped to a specific host.</li>
+</ul>
+</li>
+<li>After checking <code>/etc/hosts</code> file it checks DNS by looking up the DNS server IP&rsquo;s in the <code>/etc/resolve.conf</code> file.</li>
+</ul>
+</li>
+<li>Your computer checks its <code>/etc/resolve.conf</code> file for its configured name servers IP addresses.
+<ul>
+<li>The file might contain something like this <code>nameserver 192.168.65.1</code></li>
+<li>Name servers IP addresses can be configured manually but are often assigned by your router when you set up your computer&rsquo;s WiFi or ethernet connection.</li>
 <li>The router in turn often gets the name servers IP addresses from the Internet Service Provider (ISP) when the router is set up.</li>
 </ul>
 </li>
@@ -118,7 +130,7 @@ My goal here is to enlighten you on DNS so that as a mid level or junior enginee
 </li>
 </ul>
 <p>As shown above the DNS query can traverse a lot of machines and it does this very quickly. It does this quickly in part because the underlying transport protocol of the DNS system is the User Datagram Protocol (UDP).</p>
-<p>UDP is a stateless protocol in contrast to the more typical TCP protocol. In essence the UDP protocol by design does not require any kind of confirmation that a connection has been established. UDP by design sends out a packet to a known IP at a known port, in the case of DNS the port is port 53, (AWS Route53 is Amazons cloud based DNS service which sports the &ldquo;53&rdquo; as anod to the port number). UDP will wait for a response and will assume the target IP is correct. UPD does not try to verify that the target IP is correct or if a DNS server is listening, it just fires off a request and waits for a response. The TCP protocol in contrast does a lot of checking to insure it sends a request to a valid IP and that a connection is established.</p>
+<p>UDP is a stateless protocol in contrast to the more typical TCP protocol. In essence the UDP protocol by design does not require any kind of confirmation that a connection has been established. UDP by design sends out a packet to a known IP at a known port, in the case of DNS the port is port 53, (AWS Route53 is Amazons cloud based DNS service which sports the &ldquo;53&rdquo; as nod to the port number). UDP will wait for a response and will assume the target IP is correct. UPD does not try to verify that the target IP is correct or if a DNS server is listening, it just fires off a request and in the case of DNS it waits for a response. The TCP protocol in contrast does a lot of checking to insure it sends a request to a valid IP and that a connection is established.</p>
 <p>Using UDP saves time as the request traverses the network to its final destination. The nodes along the way do not have to confirm they have established connections but simply return a response or timeout.</p>
 <p>Once an IP is returned the operating system will forward the IP to your program where your program can do what it does.</p>
 <p>To reiterate the main points</p>
@@ -165,13 +177,13 @@ google.com.		239	IN	A	216.58.194.174
 <ul>
 <li>there is a section that affirms the command</li>
 <li>there is a section for the headers</li>
-<li>there is a sectionf or the query</li>
+<li>there is a section for the query</li>
 <li>and there is a section for the response</li>
 </ul>
 <p>In the example above we see the answer is</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="p">;;</span> ANSWER SECTION:
 google.com.		239	IN	A	216.58.194.174
-</code></pre></div><p>Thehe dig utility has a tremendous ammount of options, and I suggest you take it for a test drive. So below I will only list the command that I think are the most useful when debugging, it is in no way exhaustive. I simpl simpy want to give you a taste for the power of dig.</p>
+</code></pre></div><p>The dig utility has a tremendous amount of options, and I suggest you take it for a test drive. So below I will only list the command that I think are the most useful when debugging, it is in no way exhaustive. I simply want to give you a taste for the power of dig.</p>
 <p><code>dig @8.8.8.8 google.com  +trace</code>
 In the previous command I have asked dig to:</p>
 <ul>
@@ -232,7 +244,7 @@ S84BDVKNH5AGDSI7F5J0O3NPRHU0G7JQ.com. <span class="m">86400</span> IN RRSIG NSEC
 
 google.com.		300	IN	A	172.217.0.46
 <span class="p">;;</span> Received <span class="m">55</span> bytes from 216.239.38.10#53<span class="o">(</span>ns4.google.com<span class="o">)</span> in <span class="m">68</span> ms
-</code></pre></div><p>Form theorm th output above we see that our query too the following path</p>
+</code></pre></div><p>From the output above we see that our query traveled the following path</p>
 <ul>
 <li>8.8.8.8#53(8.8.8.8)
 <ul>
@@ -268,7 +280,7 @@ google.com.		300	IN	A	172.217.0.46
 </code></pre></div><p>If you want to shorten the response to just the answer section add the <code>+short</code> parameter to the query.</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ dig -x 216.239.38.10 +short 
 ns4.google.com.
-</code></pre></div><p>The response to that is veyr clear and brief.</p>
+</code></pre></div><p>The response to that is very clear and brief.</p>
 
     </section>
 

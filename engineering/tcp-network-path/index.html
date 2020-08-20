@@ -71,11 +71,55 @@
     </header>
 
     <section class="post-content">
-        <p>I think an indicator the marks the difference of a mid level and a senior level engineer is their understanding of the computer network. The two main underlyning protocols of that system are TCP and UDP. Each of those protocols has its place and use cases, but TCP is perhaps the most used when writing programms. In this article I want to explain why it is used for the majority of communications, how to debug it and illuminate it. If you are any kind of software engineer, frontend, backend, or data you use it every day. Understand it will strengthen your skills and become more independent vs relying on a DevOps engineer or Stack Overflow.</p>
+        <p>If there were one thing I would stress young software engineers to learn it would be networking. Networking is a foundational function of software programming. When you write a web server, that software is deeply rooted in the topology of the greater network. It&rsquo;s definitely possible to abstract the network away from an engineers day to day work but understanding networking will almost certainly make you a better engineer. I would go so far as to say that all great software engineers at least grock network topologies.</p>
+<p>Networking is so fundamental to delivering web based information, that I would make the analogy to that of an electrician only knowing how to add a new light socket or changing a light bulb to an engineer only knowing how to write REST API endpoints. Understanding how the bits and electrical pulses get from some laptop on the internet to your web server on AWS is going to make you more confident in your work and really illuminate the work you are doing. In short you will understand the purpose of your cog in the overarching system that is the network. I had several aha! moments when I was finally able to put all the pieces together and sort of liberated me from dependence on Systems Engineers. Trust me you will love it and you will feel like a cool kid to know this stuff.</p>
+<p>OK so lets start with a very basics, something as a software engineer you are no doubt very familiar with, writing an API endpoint that delivers a &ldquo;Hello World&rdquo; message.</p>
+<p>On the command line a user might initiate a network request using the <code>curl</code> program. If you are not too familiar with <code>curl</code> suffice it to say it is a tool for making requests on the network. Typically you will see something like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">curl google.com 
+</code></pre></div><p>which will return something like this</p>
+<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html"><span class="p">&lt;</span><span class="nt">HTML</span><span class="p">&gt;&lt;</span><span class="nt">HEAD</span><span class="p">&gt;&lt;</span><span class="nt">meta</span> <span class="na">http-equiv</span><span class="o">=</span><span class="s">&#34;content-type&#34;</span> <span class="na">content</span><span class="o">=</span><span class="s">&#34;text/html;charset=utf-8&#34;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">TITLE</span><span class="p">&gt;</span>301 Moved<span class="p">&lt;/</span><span class="nt">TITLE</span><span class="p">&gt;&lt;/</span><span class="nt">HEAD</span><span class="p">&gt;&lt;</span><span class="nt">BODY</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">H1</span><span class="p">&gt;</span>301 Moved<span class="p">&lt;/</span><span class="nt">H1</span><span class="p">&gt;</span>
+The document has moved
+<span class="p">&lt;</span><span class="nt">A</span> <span class="na">HREF</span><span class="o">=</span><span class="s">&#34;http://www.google.com/&#34;</span><span class="p">&gt;</span>here<span class="p">&lt;/</span><span class="nt">A</span><span class="p">&gt;</span>.
+<span class="p">&lt;/</span><span class="nt">BODY</span><span class="p">&gt;&lt;/</span><span class="nt">HTML</span><span class="p">&gt;</span>
+</code></pre></div><p>That is a very simple example but also a great example, so lets dig in a bit deeper.
+In order to dig deeper lets look at a more verbose version of this request. The previous simple request returned only the HTML but if we want to see the &ldquo;full&rdquo; response lets add a new parameter to our <code>curl</code> command.</p>
+<p><code>curl -v google.com</code></p>
+<p>The <code>-v</code> is the parameter that tells curl to return the &ldquo;verbose&rdquo; response. I&rsquo;ll be honest with you this is not the complete response from the server. It is in fact just the &ldquo;body&rdquo; and &ldquo;headers&rdquo; from the http packet.</p>
+<p>And it looks like this.</p>
+<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html">*   Trying 2607:f8b0:4005:807::200e...
+* TCP_NODELAY set
+* Connected to google.com (2607:f8b0:4005:807::200e) port 80 (#0)
+&gt; GET / HTTP/1.1
+&gt; Host: google.com
+&gt; User-Agent: curl/7.64.1
+&gt; Accept: */*
+&gt; 
+<span class="p">&lt;</span> <span class="nt">HTTP</span><span class="err">/</span><span class="na">1</span><span class="err">.</span><span class="na">1</span> <span class="na">301</span> <span class="na">Moved</span> <span class="na">Permanently</span>
+<span class="err">&lt;</span> <span class="na">Location:</span> <span class="na">http:</span><span class="err">//</span><span class="na">www</span><span class="err">.</span><span class="na">google</span><span class="err">.</span><span class="na">com</span><span class="err">/</span>
+<span class="err">&lt;</span> <span class="na">Content-Type:</span> <span class="na">text</span><span class="err">/</span><span class="na">html</span><span class="err">;</span> <span class="na">charset</span><span class="o">=</span><span class="s">UTF-8</span>
+<span class="err">&lt;</span> <span class="na">Date:</span> <span class="na">Mon</span><span class="err">,</span> <span class="na">27</span> <span class="na">Jul</span> <span class="na">2020</span> <span class="na">02:33:21</span> <span class="na">GMT</span>
+<span class="err">&lt;</span> <span class="na">Expires:</span> <span class="na">Wed</span><span class="err">,</span> <span class="na">26</span> <span class="na">Aug</span> <span class="na">2020</span> <span class="na">02:33:21</span> <span class="na">GMT</span>
+<span class="err">&lt;</span> <span class="na">Cache-Control:</span> <span class="na">public</span><span class="err">,</span> <span class="na">max-age</span><span class="o">=</span><span class="s">2592000</span>
+<span class="err">&lt;</span> <span class="na">Server:</span> <span class="na">gws</span>
+<span class="err">&lt;</span> <span class="na">Content-Length:</span> <span class="na">219</span>
+<span class="err">&lt;</span> <span class="na">X-XSS-Protection:</span> <span class="na">0</span>
+<span class="err">&lt;</span> <span class="na">X-Frame-Options:</span> <span class="na">SAMEORIGIN</span>
+<span class="err">&lt;</span> 
+<span class="err">&lt;</span><span class="na">HTML</span><span class="p">&gt;&lt;</span><span class="nt">HEAD</span><span class="p">&gt;&lt;</span><span class="nt">meta</span> <span class="na">http-equiv</span><span class="o">=</span><span class="s">&#34;content-type&#34;</span> <span class="na">content</span><span class="o">=</span><span class="s">&#34;text/html;charset=utf-8&#34;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">TITLE</span><span class="p">&gt;</span>301 Moved<span class="p">&lt;/</span><span class="nt">TITLE</span><span class="p">&gt;&lt;/</span><span class="nt">HEAD</span><span class="p">&gt;&lt;</span><span class="nt">BODY</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">H1</span><span class="p">&gt;</span>301 Moved<span class="p">&lt;/</span><span class="nt">H1</span><span class="p">&gt;</span>
+The document has moved
+<span class="p">&lt;</span><span class="nt">A</span> <span class="na">HREF</span><span class="o">=</span><span class="s">&#34;http://www.google.com/&#34;</span><span class="p">&gt;</span>here<span class="p">&lt;/</span><span class="nt">A</span><span class="p">&gt;</span>.
+<span class="p">&lt;/</span><span class="nt">BODY</span><span class="p">&gt;&lt;/</span><span class="nt">HTML</span><span class="p">&gt;</span>
+* Connection #0 to host google.com left intact
+* Closing connection 0
+</code></pre></div><p>So my goal here is to give you a crash course in the basics of networking. I hope that the reader will leave with a much greater understanding of how the bits fly from computer to computer on the internet at large.</p>
 <p>So to begin I want to explain the fundamentals of Transmission Control Protocol (TCP).
-Here are some of the proeprites of the protocol:</p>
+Here are some of the properties of the protocol:</p>
 <ul>
-<li>A TCP connection is validated and confirmed before data is trasnsmitted</li>
+<li>A TCP connection is validated and confirmed before data is transmitted</li>
 <li>Connections can be reused to transmit data</li>
 <li>TCP is a stream protocol</li>
 <li>Data sent over TCP to a destination is sent in packets
@@ -90,9 +134,9 @@ Here are some of the proeprites of the protocol:</p>
 <li>Packets can be sent out of order to the destination
 <ul>
 <li>The packets are reorganized at the destination in the correct order</li>
-<li>the destination can perform data inegrity/ error checking on each packet
+<li>the destination can perform data integrity/ error checking on each packet
 <ul>
-<li>the dstination can request a packet be resent when it finds an error in a packet</li>
+<li>the destination can request a packet be resent when it finds an error in a packet</li>
 </ul>
 </li>
 </ul>

@@ -6,10 +6,22 @@
     <description>Recent content on Le Garden Fox</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 10 Jul 2020 23:22:03 -0700</lastBuildDate>
+    <lastBuildDate>Fri, 14 Aug 2020 23:22:03 -0700</lastBuildDate>
     
 	<atom:link href="https://le-garden-fox.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>The Boot Sequence</title>
+      <link>https://le-garden-fox.github.io/engineering/boot-sequence/</link>
+      <pubDate>Fri, 14 Aug 2020 23:22:03 -0700</pubDate>
+      
+      <guid>https://le-garden-fox.github.io/engineering/boot-sequence/</guid>
+      <description>Why you should know about this?
+Simply put, you should know about the boot process because it introduces you to the fundamental pieces of your computing system. Having a working knowledge of the kernel, the init process, the BIOS and the other underlying process can give you the upper hand in debugging your system.
+What are the steps in the boot process?
+ Power BIOS MBR GRUB Kernel Init Run-Levels or PBMGKIR or (Please Bring More Green Kellogs In Rice)  Power</description>
+    </item>
     
     <item>
       <title>Grocking TCP Network Connections</title>
@@ -17,7 +29,7 @@
       <pubDate>Fri, 10 Jul 2020 23:22:03 -0700</pubDate>
       
       <guid>https://le-garden-fox.github.io/engineering/tcp-network-path/</guid>
-      <description>I think an indicator the marks the difference of a mid level and a senior level engineer is their understanding of the computer network. The two main underlyning protocols of that system are TCP and UDP. Each of those protocols has its place and use cases, but TCP is perhaps the most used when writing programms. In this article I want to explain why it is used for the majority of communications, how to debug it and illuminate it.</description>
+      <description>If there were one thing I would stress young software engineers to learn it would be networking. Networking is a foundational function of software programming. When you write a web server, that software is deeply rooted in the topology of the greater network. It&amp;rsquo;s definitely possible to abstract the network away from an engineers day to day work but understanding networking will almost certainly make you a better engineer. I would go so far as to say that all great software engineers at least grock network topologies.</description>
     </item>
     
     <item>

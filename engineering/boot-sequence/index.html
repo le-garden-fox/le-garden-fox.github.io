@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#"><!--<![endif]-->
+
+    <head>
+                <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="author" content="">
+  
+	
+        <meta property="og:site_name" content="Le Garden Fox">
+        <meta property="og:title" content="Le Garden Fox">
+        <meta property="og:url" content="https://le-garden-fox.github.io/engineering/boot-sequence/">
+        <meta property="og:description" content="love under will">
+    
+        <meta property="og:type" content="article" />
+        <meta property="og:article:author" content="" />
+        <meta property="og:article:published_time" content="2020-08-14T23:22:03-07:00" />
+    
+        <meta name="generator" content="Hugo 0.73.0" />
+        <title>The Boot Sequence &middot; Le Garden Fox</title>
+        <link rel="canonical" href="https://le-garden-fox.github.io/" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="">
+        <link rel="stylesheet" type="text/css" href="https://le-garden-fox.github.io/css/custom.css"/>
+        <link rel="stylesheet" type="text/css" href="https://le-garden-fox.github.io/css/main.css"/>
+            <link rel="stylesheet" type="text/css" href="https://le-garden-fox.github.io/css/syntax.css"/>
+        <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300|Montserrat:700" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    </head>
+
+<body>
+<!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chrome/‎">install Google Chrome</a> to experience this site.</p><![endif]-->
+
+<header id="header">
+
+    <nav class="links">
+        <ul>
+            
+                <li>
+                    <a href="https://le-garden-fox.github.io/">
+                            <i class="fa fa-home">&nbsp;</i>Home
+                    </a>
+                </li>
+            
+        </ul>
+    </nav>
+</header>
+<header id="site-header">
+    <div class="container">
+        <a href="https://le-garden-fox.github.io/" alt="Le Garden Fox"><h1 class="blog-title heading">Le Garden Fox</h1></a>
+        <p class="blog-description">love under will</p>
+
+        
+        <img src="https://le-garden-fox.github.io/images/bryce-canyon.jpg"/>
+        
+    </div>
+</header>
+<main class="content" role="main">
+	<div class="container">
+		<article class="engineering">
+	<header class="post-header">
+        <h3 class="p-post-title">The Boot Sequence</h3>
+    </header>
+
+    <section class="post-content">
+        <p>Why you should know about this?</p>
+<p>Simply put, you should know about the boot process because it introduces you to the fundamental pieces of your computing system. Having a working knowledge of the kernel, the init process, the BIOS and the other underlying process can give you the upper hand in debugging your system.</p>
+<p>What are the steps in the boot process?</p>
+<ul>
+<li>Power</li>
+<li>BIOS</li>
+<li>MBR</li>
+<li>GRUB</li>
+<li>Kernel</li>
+<li>Init</li>
+<li>Run-Levels
+or  PBMGKIR or (Please Bring More Green Kellogs In Rice)</li>
+</ul>
+<p>Power</p>
+<ul>
+<li>This is self explanatory and is the manual step of allowing power to run through the system</li>
+</ul>
+<p>BIOS</p>
+<ul>
+<li>The BIOS or Basic Input Output System is the initial software that runs on your motherboard is dictated by the manufacturer.</li>
+<li>The main purpose of the BIOS is to find the MDR and load it</li>
+<li>In the BIOS you can define some general parameters about the system like
+<ul>
+<li>Where to find the MBR</li>
+<li>Hardware options like overclocking</li>
+<li>Password protect BIOS</li>
+</ul>
+</li>
+</ul>
+<p>MBR</p>
+<ul>
+<li>The goal of the MBR, which is found in the first sector of the boot disk, is to load GRUB or whatever boot loader is configured</li>
+<li>Contains a table of all the partitions on the disk that have been formatted</li>
+</ul>
+<p>GRUB</p>
+<ul>
+<li>It loads the kernel</li>
+<li>Can be configured dynamically</li>
+<li>Can be found on any device, i.e. disk, USB, CD, DVD</li>
+<li>Can load OS even from network</li>
+<li>Does not need to be rebuilt each time a config is changed</li>
+</ul>
+<p>Kernel</p>
+<ul>
+<li>It is the interface for the operating system that grants access to the hardware</li>
+<li>Manages user space processes by scheduling it’s CPU time</li>
+<li>Manages memory and creates the interface for virtual memory</li>
+<li>Allocates memory for itself that the user space memory cannot access</li>
+<li>Launches the init process</li>
+</ul>
+<p>Init</p>
+<ul>
+<li>Is the initial process that all user space fork from</li>
+</ul>
+<p>Run Levels</p>
+<ul>
+<li>Are the states of the init or system</li>
+<li>Defines what systems are operational
+<ul>
+<li>0 = Power-off</li>
+<li>1 = Single user mode (minimal functionality maintenance mode)</li>
+<li>2 = Multi user mode (No network interfaces or daemons)</li>
+<li>3 = Multi user mode with networking (basic run level for command line)</li>
+<li>4 = NA</li>
+<li>5 = X11 or GUI (GUI operating systems ready)</li>
+<li>6 = Reboot (reboots the system, starts shutting off services in order)</li>
+</ul>
+</li>
+</ul>
+<p>Systemd runlevels</p>
+<ul>
+<li>Systemctl isolate &lt;multi-user.target&gt;</li>
+<li>Run level 0 is matched by power-off.target (and runlevel0.target is a symbolic link to power-off.target).</li>
+<li>Run level 1 is matched by rescue.target (and runlevel1.target is a symbolic link to rescue.target).</li>
+<li>Run level 3 is emulated by multi-user.target (and runlevel3.target is a symbolic link to multi-user.target).</li>
+<li>Run level 5 is emulated by graphical.target (and runlevel5.target is a symbolic link to graphical.target).</li>
+<li>Run level 6 is emulated by reboot.target (and runlevel6.target is a symbolic link to reboot.target).</li>
+<li>Emergency is matched by emergency.target.</li>
+</ul>
+<p>Commands</p>
+<ul>
+<li>Init will change run levels in older systems</li>
+<li>Who -r (will display the current run level)</li>
+<li>dmesg (shows the logs from the kernel) or driver message command will output the kernel ring buffer logs</li>
+<li>/var/log/boot.log (system boot logs)</li>
+<li>/var/log/dmesg (kernel logs)</li>
+<li>Change run level with systemctl get-default</li>
+</ul>
+<p>How to go about debugging issues at each step of the boot process?</p>
+
+    </section>
+
+    <hr>
+
+    <footer class="post-footer">
+        <section class="f-1">
+            
+            
+            <p class="f-post-time"><time datetime="2020-08-14T23:22:03-07:00">August 14, 2020</time></p>
+        </section>
+                        
+        <section class="f-2">
+            <section class="share">
+                <span>Share:
+                <a class="icon-twitter" href="http://twitter.com/share?text=The%20Boot%20Sequence&url=https%3a%2f%2fle-garden-fox.github.io%2fengineering%2fboot-sequence%2f"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fle-garden-fox.github.io%2fengineering%2fboot-sequence%2f"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fle-garden-fox.github.io%2fengineering%2fboot-sequence%2f"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                </span>
+            </section>
+
+            
+        </section>
+                        
+    </footer>
+</article>
+	</div>
+</main>
+    <footer id="site-footer">
+        <div class="container">
+          
+          
+          
+          
+          <a href="https://le-garden-fox.github.io/index.xml" title="Get the RSS feed"><span class="tooltip"><i class="fa fa-rss"></i></span></a>
+          <section>&copy; <a href="https://le-garden-fox.github.io/"></a> 2017 | All rights reserved</section>
+          </div>
+    </footer>
+
+    <script type="text/javascript" src="https://le-garden-fox.github.io/js/fittext.js"></script>
+    <script type="text/javascript">
+      $(".heading").fitText();
+    </script>
+
+
+
+</body>
+</html>
